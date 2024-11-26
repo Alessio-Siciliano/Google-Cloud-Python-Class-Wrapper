@@ -13,6 +13,13 @@ Just run:
 - [ ] DataTransfer
 - [ ] Storage
 
+#TODO
+- [ ] Implement test
+- [ ] Implement Bigquery class
+- [ ] Implement DataTransfer class
+- [ ] Add more utils classes
+- [ ] Implement the correct folder structure
+
 # Documentation
 TODO
 
