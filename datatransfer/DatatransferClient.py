@@ -32,7 +32,7 @@ class DatatransferClient:
         self.project_id                        = project_id
         self.location                          = location
         self.string_util                       = String()
-        self.list_of_scheduled_queries_objects = str()
+        self.list_of_scheduled_queries_objects = list()
         if service_account_key_file_path == '':
             self.client = bigquery_datatransfer.DataTransferServiceClient()
         else:
@@ -79,8 +79,9 @@ class DatatransferClient:
 
         return scheduled_query
     
-    def get_all_scheduled_queries(self):
-        """Get ALL schedule queries of an entire project.
+    def get_all_scheduled_queries(self) -> list['ScheduledQuery']:
+        """Get ALL schedule queries of an entire project. We save the list for future calls so the data are already available.
+        E.g: we get all the scheduled queries and then we want filter only for those created by an user. First, we download the data and then filter.
 
         Parameters
         ----------
@@ -106,3 +107,52 @@ class DatatransferClient:
             """ Append the object to the list """
             self.list_of_scheduled_queries_objects.append(scheduled_query)
         return self.list_of_scheduled_queries_objects
+
+    def get_scheduled_queries_by_owner_email(self, owner_email: str) -> list[ScheduledQuery]:
+        """Get all schedule queries of a given user email.
+
+        Parameters
+        ----------
+        owner_email: str
+            The owner email.
+
+        Returns
+        -------
+        List[ScheduledQuery]
+            List of the object (if found) of the Scheduled Query for the owner
+
+        """
+        if len(self.list_of_scheduled_queries_objects) == 0:
+            self.get_all_scheduled_queries()
+        return list(filter(lambda x: x.owner_email == owner_email, self.list_of_scheduled_queries_objects)) if len(self.list_of_scheduled_queries_objects) > 0 else []
+    
+    def update_scheduled_query(self, scheduled_query_id: str, changes: dict) -> None:
+        """Update a scheduled query by its ID
+
+        Parameters
+        ----------
+        scheduled_query_id: str
+            The ID of the scheduled query
+
+        changes: dict
+            A dictionary where each key is an attribute to change and the value is the new value for that attribute.
+
+        Returns
+        -------
+        None
+        """
+        scheduled_query_object = bigquery_datatransfer.TransferConfig(name = scheduled_query_id)
+        for key, value in changes.items():
+            if not hasattr(scheduled_query_object, key):
+                print('ERRORE')
+            setattr(scheduled_query_object, key, value)
+            
+        #scheduled_query_object.disabled = disabled
+        #scheduled_query_object.display_name = 'sched_DB_INITIAL_TARGET_2023'
+        transfer_config = self.client.update_transfer_config(
+            {
+                "transfer_config": scheduled_query_object,
+                "update_mask": {'paths':list(set(changes.keys()))},
+            }
+        )
+        #TODO:magari ritornare uno stato?
