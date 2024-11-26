@@ -13,7 +13,7 @@ class Dataset:
     project                 = None
     
     def set_attribute(self, attribute_name: str, attribute_value):
-        if getattr(self, attribute_name) is not None:
+        if hasattr(self, attribute_name) is not None:
             setattr(self, attribute_name, attribute_value)
     
     def get_attribute(self, attribute_name: str):

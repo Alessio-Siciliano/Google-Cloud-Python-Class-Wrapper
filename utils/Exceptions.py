@@ -5,3 +5,8 @@ class InvalidArgumentToFunction(Exception):
 
 class ErrorDuringConnection(Exception):
     pass
+
+class ScheduledQueryIdWrongFormat(Exception):
+    def __init__(self) -> None:
+        message = "The given ID isn't in the correct format. Please use the format 'projects/[]/locations/[]/transferConfigs/[]'"
+        Exception.__init__(self, message)
