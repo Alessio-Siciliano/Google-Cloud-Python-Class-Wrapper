@@ -1,8 +1,8 @@
 """ This module provides a set of useful functions to manipulate strings. """
 import re
-from utils.Exceptions import InvalidArgumentToFunction
+from utils.exceptions import InvalidArgumentToFunction
 
-class Strings:
+class String:
     """ This class provides all the utils functions for strings. """
 
     # Rule to remove all text inside a comment in each language.(default: StandardSQL (//, --, /**/)
