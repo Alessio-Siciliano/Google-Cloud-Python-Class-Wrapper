@@ -1,5 +1,5 @@
 from google.cloud import bigquery_datatransfer
-from utils.String import String
+from utils.strings import String
 from datatransfer.ScheduledQuery import ScheduledQuery
 import re
 from utils.Exceptions import ScheduledQueryIdWrongFormat
