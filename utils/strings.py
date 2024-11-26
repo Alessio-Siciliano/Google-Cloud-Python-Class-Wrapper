@@ -1,19 +1,20 @@
+""" This module provides a set of useful functions to manipulate strings. """
 import re
 from utils.Exceptions import InvalidArgumentToFunction
 
-class String:
+class Strings:
     """ This class provides all the utils functions for strings. """
 
-    """
-        Rule to remove all text inside a comment in each language .
-        (default: Standard SQL (//, --, /**/))
-    """
+    # Rule to remove all text inside a comment in each language.(default: StandardSQL (//, --, /**/)
     comments_patterns = {
         'standard_sql': r'//.*|--.*|\/\*.*?\*\/'
     }
 
-    """ REGEX to identify a table with the pattern <project>.<dataset>.<table>"""
+    # REGEX to identify a table with the pattern <project>.<dataset>.<table>
     tables_pattern = r"[\w'\"`_-]+\.[\w'\"`_-]+\.[\w'\"`_-]+"
+
+    # REGEX pattern to identify all non alphanumeric, ., -,_
+    non_alphanumeric_chars = "[^a-zA-Z0-9._\\s-]"
 
     def remove_chars_from_string(self, string: str, chars_to_remove: list[str]) -> str:
         """Removes some special characters from a given string.
@@ -70,13 +71,13 @@ class String:
         """
         if string is None:
             raise InvalidArgumentToFunction()
-  
-        """ Clear the input query, removing all comments and special chars """
-        clear_query_from_comments             = self.remove_comments_from_string(string)
-        clear_query_from_comments_and_symbols = re.sub("[^a-zA-Z0-9._\\s-]", "", clear_query_from_comments)
 
-        """ Find all occurrences of the pattern inside the query """
-        matches = re.findall(self.tables_pattern, clear_query_from_comments_and_symbols)
+        # Clear the input query, removing all comments and special chars
+        cleaned_query = self.remove_comments_from_string(string)
+        cleaned_query = re.sub(self.non_alphanumeric_chars, "", cleaned_query)
 
-        """ Remove duplicates with set() """
+        # Find all occurrences of the pattern inside the query
+        matches = re.findall(self.tables_pattern, cleaned_query)
+
+        # Remove duplicates with set()
         return list(set(matches))
