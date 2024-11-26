@@ -4,11 +4,14 @@ from utils.Exceptions import InvalidArgumentToFunction
 class String:
     """ This class provides all the utils functions for strings. """
 
-    """ Rule to remove all text inside a comment in each language (default: Standard SQL (//, --, /**/)) """
+    """
+        Rule to remove all text inside a comment in each language .
+        (default: Standard SQL (//, --, /**/))
+    """
     comments_patterns = {
         'standard_sql': r'//.*|--.*|\/\*.*?\*\/'
     }
-    
+
     """ REGEX to identify a table with the pattern <project>.<dataset>.<table>"""
     tables_pattern = r"[\w'\"`_-]+\.[\w'\"`_-]+\.[\w'\"`_-]+"
 
@@ -67,7 +70,7 @@ class String:
         """
         if string is None:
             raise InvalidArgumentToFunction()
-        
+  
         """ Clear the input query, removing all comments and special chars """
         clear_query_from_comments             = self.remove_comments_from_string(string)
         clear_query_from_comments_and_symbols = re.sub("[^a-zA-Z0-9._\\s-]", "", clear_query_from_comments)
@@ -77,5 +80,3 @@ class String:
 
         """ Remove duplicates with set() """
         return list(set(matches))
- 
-    
